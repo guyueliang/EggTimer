@@ -3,7 +3,7 @@
      package="hutt.tim.eggtimer" _:installLocation="auto" _:versionName="1.4.2" _:versionCode="7">
     <application _:label="@string/app_name" _:icon="@drawable/icon">
     
-        <activity _:name=".MainActivity" _:screenOrientation="portrait" _:launchMode="singleInstance">
+        <activity _:name=".MainActivity" _:exported="true" _:screenOrientation="portrait" _:launchMode="singleInstance">
             <intent-filter>
                 <action _:name="android.intent.action.MAIN" />
                 <category _:name="android.intent.category.LAUNCHER" />
@@ -20,16 +20,24 @@
             	<category _:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+        <service _:name=".AlarmService"/>
         
         <activity _:name=".SettingsActivity"
+            _:exported="false"
                   _:label="@string/app_name"
 				  _:screenOrientation="portrait">
         </activity>
 
     </application>
     <uses-sdk _:minSdkVersion="3"/>
-	<uses-permission _:name="android.permission.VIBRATE"/>
+    <uses-permission
+        _:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission _:name="android.permission.VIBRATE"/>
 	<uses-permission _:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission _:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission _:name="android.permission.POST_NOTIFICATIONS" />
 
-<uses-permission _:name="android.permission.WAKE_LOCK"></uses-permission>
+
+
+    <uses-permission _:name="android.permission.WAKE_LOCK"></uses-permission>
 </manifest>

@@ -16,6 +16,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
@@ -57,8 +58,11 @@ import android.widget.ViewFlipper;
 // 3. The duration of the alarm (for the reset button).
 //
 // When the alarm goes off we send an intent to this activity to sound the noise.
+//响铃的时候，在Receiver中启动service,然后在service中先发出通知，响铃和振动再运行，在activity中可以关闭服务
 public class MainActivity extends Activity implements OnClickListener, OnLongClickListener, Dialog.OnDismissListener
 {
+	public static final String CHANNEL_ID = "MY_ALARM_SERVICE_CHANNEL";
+
 	// The number of rows and columns for the buttons.
 	final static int NUM_ROWS = 6;
 	final static int NUM_COLS = 4;
@@ -160,7 +164,16 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		// The alarm manager.
 		alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
 		// This starts the AlarmReceiver, which in turn creates this activity.
-		alarmIntent = PendingIntent.getBroadcast(this, 0, new Intent("hutt.tim.eggtimer.ALARM_WAKE"), 0);
+//		alarmIntent = PendingIntent.getBroadcast(this, 0, new Intent("hutt.tim.eggtimer.ALARM_WAKE"), 0);
+
+		Intent intent = new Intent(this, AlarmReceiver.class);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+			alarmIntent =  PendingIntent.getBroadcast(this, 0,
+					intent,  PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_MUTABLE);
+		}else {
+			alarmIntent =  PendingIntent.getBroadcast(this, 0,
+					intent, PendingIntent.FLAG_CANCEL_CURRENT );
+		}
 		
 		// The view switcher which changes between out three views.
 		viewFlipper = new ViewFlipper(this);
@@ -182,6 +195,7 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 				&& getIntent().getAction() != null
 				&& getIntent().getAction().equals("hutt.tim.eggtimer.ALARM_SOUND"))
 		{
+			//从AlarmReceiver中启动的，应该为响铃状态
 			Log.d("EggTimer", "SOUND_ALARM onCreate()");
 
 			showAlarmView();
@@ -237,6 +251,9 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		}
 	}
 
+	/**
+	 * 创建选择倒计时界面
+	 */
 	private void createButtonsView()
 	{
 		int n = 0;
@@ -272,6 +289,9 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		}
 	}
 
+	/**
+	 * 创建倒计时界面，倒计时开始，显示该界面
+	 */
 	void createTimerView()
 	{
 		timerView = View.inflate(this, R.layout.timer, null);
@@ -281,7 +301,10 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		resetButton.setOnClickListener(this);
 	    countdownText = (TextView)timerView.findViewById(R.id.CountdownText);
 	}
-	
+
+	/**
+	 * 创建响铃界面，响铃开始的时候，显示该界面
+	 */
 	void createAlarmView()
 	{
 		alarmView = View.inflate(this, R.layout.alarm, null);
@@ -502,6 +525,7 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		}
 		else if (v == resetButton || v == restartButton) // Or the reset button.
 		{
+			//重新设置或者重新启动闹钟
 			alarmManager.cancel(alarmIntent);
 			if (countdownTextTimer != null)
 			{
@@ -510,15 +534,27 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			}
 			stopAlarmNoise();
 			alarmState = ALARM_SET;
-			alarmTime = System.currentTimeMillis() + alarmDuration * 1000;			
-			alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + alarmDuration * 1000 - 500, // The 500 is to give the alarm noise time to load and so it doesn't flash to the button screen for a second.
-					alarmIntent);
+			alarmTime = System.currentTimeMillis() + alarmDuration * 1000;
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				//android 6.0以上版本
+				alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + alarmDuration * 1000 - 500, alarmIntent);
+			} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				//android 4.4以上版本
+				alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + alarmDuration * 1000 - 500, alarmIntent);
+			}else{
+				//android 4.4以下版本
+				alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + alarmDuration * 1000 - 500, // The 500 is to give the alarm noise time to load and so it doesn't flash to the button screen for a second.
+						alarmIntent);
+			}
+//			alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + alarmDuration * 1000 - 500, // The 500 is to give the alarm noise time to load and so it doesn't flash to the button screen for a second.
+//					alarmIntent);
 			startCountdownText(alarmDuration * 1000);
 			showTimerView();
 			Wakelocker.releaseCpuLock();
 		}
 		else
 		{
+			//开始计时器，即开始闹钟
 			// Must be a timer button.
 			long seconds = -1;
 			for (int i = 0; i < buttonArray.length; ++i)
@@ -531,10 +567,22 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			}
 			if (seconds == -1)
 				return;
-			
 
-			alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + seconds * 1000 - 500, // The 500 is to give the alarm noise time to load and so it doesn't flash to the button screen for a second.
-					alarmIntent);
+
+			//设置精确的闹钟,以及可重复的闹钟
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+				//android 6.0以上版本
+				alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + seconds * 1000 - 500, alarmIntent);
+			} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				//android 4.4以上版本
+				alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + seconds * 1000 - 500, alarmIntent);
+			}else{
+				//android 4.4以下版本
+				alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + seconds * 1000 - 500, // The 500 is to give the alarm noise time to load and so it doesn't flash to the button screen for a second.
+						alarmIntent);
+			}
+			/*alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + seconds * 1000 - 500, // The 500 is to give the alarm noise time to load and so it doesn't flash to the button screen for a second.
+					alarmIntent);*/
 			startCountdownText(seconds * 1000);
 			showTimerView();
 			setNotification();
@@ -866,7 +914,7 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 
 		// the next two lines initialize the Notification, using the configurations above
 		Notification notification = new Notification(R.drawable.icon, "Egg Timer Running", 0);
-		notification.setLatestEventInfo(this, "Egg Timer Running", null, contentIntent);
+//		notification.setLatestEventInfo(this, "Egg Timer Running", null, contentIntent);
 		notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
 		mNotificationManager.notify(NOTIFICATION_ID, notification);
 	}
