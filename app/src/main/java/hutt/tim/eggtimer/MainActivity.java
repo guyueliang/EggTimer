@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.PowerManager;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -62,6 +63,7 @@ import android.widget.ViewFlipper;
 public class MainActivity extends Activity implements OnClickListener, OnLongClickListener, Dialog.OnDismissListener
 {
 	public static final String CHANNEL_ID = "MY_ALARM_SERVICE_CHANNEL";
+	PowerManager.WakeLock mWakelock;
 
 	// The number of rows and columns for the buttons.
 	final static int NUM_ROWS = 6;
@@ -142,7 +144,23 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 	{
 		Log.d("EggTimer", "onCreate()");
 		super.onCreate(savedInstanceState);
-		
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1){
+			//api >=27
+			Log.d("debug","高于android8.1系统");
+			setShowWhenLocked(true);
+			setTurnScreenOn(true);//必须要有，否则屏幕不亮
+
+		}else{
+			Log.d("debug","低于android8.1系统");
+			Window win = getWindow();
+			//其中的两个参数都必须要有，否则手机锁屏的时候屏幕不亮
+			win.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+					| WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED); //必须要有，否则屏幕不亮
+
+		}
+
+		//使屏幕保持开启状态，不确定是否有用
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
 				/*| WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON*/ | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON); // TODO: Make this configurable.
 
@@ -225,12 +243,15 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 		default:
 		case ALARM_OFF:
 			showButtonView();
+			Log.d("TAG","buttonView");
 			break;
 		case ALARM_SET:
 			showTimerView();
+			Log.d("TAG","timerView");
 			break;
 		case ALARM_SOUNDING:
 			showAlarmView();
+			Log.d("TAG","alarmView");
 			break;
 		}		
 	}
@@ -391,6 +412,7 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 
 		// Saves the times for each button.
 		saveTimes();
+		releaseWakeLock();
 	}
 	
 	private void startAlarmNoise()
@@ -924,5 +946,39 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 			mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
 		
 		mNotificationManager.cancelAll();
+	}
+
+	@Override
+	protected void onResume() {
+
+		//锁屏状态下唤醒屏幕，要在onResume() 方法中启动，并且要在onPause()中释放，否则会出错
+		super.onResume();
+		Log.d("TAG","onResume()");
+		acquireWakeLock();
+		showAppropriateView();
+
+	}
+
+	/**
+	 * 唤醒屏幕
+	 */
+	private void acquireWakeLock() {
+		if (mWakelock == null) {
+			PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			mWakelock = pm.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP
+					| PowerManager.SCREEN_DIM_WAKE_LOCK, this.getClass()
+					.getCanonicalName());
+			mWakelock.acquire(10000);
+		}
+	}
+
+	/**
+	 * 释放锁屏
+	 */
+	private void releaseWakeLock() {
+		if (mWakelock != null && mWakelock.isHeld()) {
+			mWakelock.release();
+			mWakelock = null;
+		}
 	}
 }

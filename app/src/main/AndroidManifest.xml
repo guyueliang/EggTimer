@@ -1,43 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest xmlns:_="http://schemas.android.com/apk/res/android"
-     package="hutt.tim.eggtimer" _:installLocation="auto" _:versionName="1.4.2" _:versionCode="7">
-    <application _:label="@string/app_name" _:icon="@drawable/icon">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+     package="hutt.tim.eggtimer"
+    android:installLocation="auto"
+    android:versionName="1.4.2"
+    android:versionCode="7">
+    <application
+        android:name=".App"
+        android:label="@string/app_name"
+        android:icon="@drawable/icon">
     
-        <activity _:name=".MainActivity" _:exported="true" _:screenOrientation="portrait" _:launchMode="singleInstance">
+        <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="portrait" android:launchMode="singleInstance">
             <intent-filter>
-                <action _:name="android.intent.action.MAIN" />
-                <category _:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-            	<action _:name="hutt.tim.eggtimer.ALARM_SOUND" />
-            	<category _:name="android.intent.category.DEFAULT" />
+            	<action android:name="hutt.tim.eggtimer.ALARM_SOUND" />
+            	<category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         
-        <receiver _:name=".AlarmReceiver"> 
+        <receiver android:name=".AlarmReceiver"
+            android:exported="true">
             <intent-filter>
-            	<action _:name="hutt.tim.eggtimer.ALARM_WAKE" />
-            	<category _:name="android.intent.category.DEFAULT" />
+            	<action android:name="hutt.tim.eggtimer.ALARM_WAKE" />
+            	<category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <service _:name=".AlarmService"/>
+        <receiver android:name=".CloseAlarmNotification"
+            android:exported="true"/>
+        <service android:name=".AlarmService"/>
         
-        <activity _:name=".SettingsActivity"
-            _:exported="false"
-                  _:label="@string/app_name"
-				  _:screenOrientation="portrait">
+        <activity android:name=".SettingsActivity"
+            android:exported="false"
+                  android:label="@string/app_name"
+				  android:screenOrientation="portrait">
         </activity>
+        <activity android:name=".ClockCompleted"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            />
 
     </application>
-    <uses-sdk _:minSdkVersion="3"/>
     <uses-permission
-        _:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission _:name="android.permission.VIBRATE"/>
-	<uses-permission _:name="android.permission.DISABLE_KEYGUARD"/>
-    <uses-permission _:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission _:name="android.permission.POST_NOTIFICATIONS" />
+        android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+	<uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 
 
-    <uses-permission _:name="android.permission.WAKE_LOCK"></uses-permission>
+    <uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
 </manifest>

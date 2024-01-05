@@ -12,7 +12,7 @@ public class AlarmReceiver extends BroadcastReceiver
 	public void onReceive(Context context, Intent intent)
 	{
 		// 1. Grab the wakelock so the phone doesn't fall asleep (damn you phone!)
-		Wakelocker.acquireCpuWakeLock(context);
+//		Wakelocker.acquireCpuWakeLock(context);
 		
 		Log.d("EggTimer", "AlarmReceiver::onReceive()");
 		
