@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : buttons.xml
+    Created on : 20 March 2010, 11:42
+    Author     : t
+    Description:
+        Purpose of the document follows.
+-->
+<set xmlns:_="http://schemas.android.com/apk/res/android">
+	<translate
+		_:interpolator="@android:anim/decelerate_interpolator"
+		_:fromYDelta="5%p" _:toYDelta="0" _:duration="500" _:startOffset="200"/>
+	<alpha
+		_:interpolator="@android:anim/decelerate_interpolator"
+		_:fromAlpha="0.0" _:toAlpha="1.0" _:duration="500" _:startOffset="200"/>
+</set>

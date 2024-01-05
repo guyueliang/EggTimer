@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <style name="HtmlDialog" parent="android:Theme.Dialog">
+        <item name="android:windowBackground">@drawable/html_dialog_background</item>
+    </style>
+</resources>

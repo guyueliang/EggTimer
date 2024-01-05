@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+  xmlns:_="http://schemas.android.com/apk/res/android">
+	<RingtonePreference
+		_:title="Alarm Tone"
+		_:summary="The tone to use."
+		_:key="tone"
+		_:order="1"
+		_:showSilent="true"
+		_:showDefault="true"
+		_:defaultValue="content://settings/system/alarm_alert"/> <!-- To do this properly is insanely hard. Actually maybe not that hard. Have to do shit in SettingsActivity. -->
+	<ListPreference
+		_:title="Relative Alarm Volume"
+		_:summary="This is relative to the system alarm volume."
+		_:key="volume"
+		_:defaultValue="3"
+		_:entries="@array/alarmVolumeStrings"
+		_:entryValues="@array/alarmVolumeValues"
+		_:order="2"/>
+	
+	<hutt.tim.eggtimer.VolumePreference
+		_:order="3"
+		_:title="System Alarm Volume"/>
+		       
+	<CheckBoxPreference
+		_:title="Vibrate"
+		_:summary="Also vibrate when the alarm goes off."
+		_:key="vibrate"
+		_:defaultValue="false"
+		_:order="4"/>
+<!--	<CheckBoxPreference
+		_:title="Unlock on Alarm"
+		_:summary="Unlock the screen when the alarm goes off."
+		_:key="unlock"
+		_:defaultValue="true"
+		_:order="4"/>-->
+</PreferenceScreen>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Egg Timer</string>
+	
+	<string name="cancel">Cancel</string>
+	<string name="silence">Silence</string>
+	<string name="countdown">00:00</string>
+	<string name="countup">00:00</string>
+	
+	<string name="ok">OK</string>
+	<string name="reset">Reset</string>
+	<string name="restart">Restart</string>
+	<string name="timer_finished">Countdown Timer\nFinished</string>
+
+
+	<string name="help"><![CDATA[<html><body><h1>Help</h1><p><b>To edit the times long-press a button.</b> To start a countdown time simply press a button, then press back or home and go back to what you were doing; the time will run in the background. To change the alarm tone, volume or vibration settings press the menu button and go to settings.</p></body></html>]]></string>
+
+	<string name="timeUnitPrompt">Select unit</string>
+
+</resources>

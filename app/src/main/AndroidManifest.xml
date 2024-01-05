@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns:_="http://schemas.android.com/apk/res/android"
+     package="hutt.tim.eggtimer" _:installLocation="auto" _:versionName="1.4.2" _:versionCode="7">
+    <application _:label="@string/app_name" _:icon="@drawable/icon">
+    
+        <activity _:name=".MainActivity" _:screenOrientation="portrait" _:launchMode="singleInstance">
+            <intent-filter>
+                <action _:name="android.intent.action.MAIN" />
+                <category _:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+            	<action _:name="hutt.tim.eggtimer.ALARM_SOUND" />
+            	<category _:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <receiver _:name=".AlarmReceiver"> 
+            <intent-filter>
+            	<action _:name="hutt.tim.eggtimer.ALARM_WAKE" />
+            	<category _:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        
+        <activity _:name=".SettingsActivity"
+                  _:label="@string/app_name"
+				  _:screenOrientation="portrait">
+        </activity>
+
+    </application>
+    <uses-sdk _:minSdkVersion="3"/>
+	<uses-permission _:name="android.permission.VIBRATE"/>
+	<uses-permission _:name="android.permission.DISABLE_KEYGUARD"/>
+
+<uses-permission _:name="android.permission.WAKE_LOCK"></uses-permission>
+</manifest>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:_="http://schemas.android.com/apk/res/android"
+  _:layout_width="wrap_content" _:layout_height="wrap_content" _:orientation="vertical">
+
+	<LinearLayout _:layout_width="wrap_content" _:layout_height="wrap_content"
+	    _:orientation="horizontal" _:gravity="center">
+		<hutt.tim.eggtimer.widgets.NumberPicker _:id="@+id/number_picker"
+		    _:layout_width="wrap_content" _:layout_height="wrap_content"/>
+		<Spinner _:id="@+id/spinner"
+			_:layout_width="wrap_content" _:layout_height="wrap_content"
+			_:prompt="@string/timeUnitPrompt" _:entries="@array/timeUnitStrings"/>
+	</LinearLayout>
+	<LinearLayout _:layout_width="fill_parent" _:layout_height="wrap_content"
+	    _:orientation="horizontal" _:gravity="center">
+		<Button _:id="@+id/cancel" _:text="Cancel" _:layout_width="fill_parent" _:layout_height="wrap_content" _:layout_weight="1.0"/>
+		<Button _:id="@+id/ok" _:text="Ok" _:layout_width="fill_parent" _:layout_height="wrap_content" _:layout_weight="1.0"/>
+	</LinearLayout>
+</LinearLayout>

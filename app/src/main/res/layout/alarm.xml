@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  android:layout_gravity="center"
+  android:gravity="center"
+  android:background="#cc3333">
+  
+<TextView android:text="@string/countup" android:id="@+id/CountupText" android:layout_width="wrap_content"
+   android:layout_height="wrap_content" android:layout_margin="20dip" android:textSize="50dip" android:typeface="monospace"
+   android:textColor="#000000"/>
+<Button android:text="@string/silence" android:id="@+id/SilenceButton" android:layout_width="wrap_content"
+   android:layout_height="wrap_content" android:padding="20dip" android:layout_margin="25dip" android:textSize="20dip"/>
+<Button android:text="@string/restart" android:id="@+id/RestartButton" android:layout_width="wrap_content"
+   android:layout_height="wrap_content" android:padding="15dip" android:layout_margin="25dip" android:textSize="15dip"/>
+  
+</LinearLayout>
