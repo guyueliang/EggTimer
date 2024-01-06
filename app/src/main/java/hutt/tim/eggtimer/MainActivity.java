@@ -607,7 +607,7 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 					alarmIntent);*/
 			startCountdownText(seconds * 1000);
 			showTimerView();
-			setNotification();
+//			setNotification();
 			
 			alarmState = ALARM_SET;
 			alarmTime = System.currentTimeMillis() + seconds * 1000;
@@ -928,17 +928,17 @@ public class MainActivity extends Activity implements OnClickListener, OnLongCli
 	
 	void setNotification()
 	{
-		if (mNotificationManager == null)
-			mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-
-		Intent notificationIntent = new Intent(this, MainActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-		// the next two lines initialize the Notification, using the configurations above
-		Notification notification = new Notification(R.drawable.icon, "Egg Timer Running", 0);
-//		notification.setLatestEventInfo(this, "Egg Timer Running", null, contentIntent);
-		notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
-		mNotificationManager.notify(NOTIFICATION_ID, notification);
+//		if (mNotificationManager == null)
+//			mNotificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+//
+//		Intent notificationIntent = new Intent(this, MainActivity.class);
+//		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+//
+//		// the next two lines initialize the Notification, using the configurations above
+//		Notification notification = new Notification(R.drawable.icon, "Egg Timer Running", 0);
+////		notification.setLatestEventInfo(this, "Egg Timer Running", null, contentIntent);
+//		notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
+//		mNotificationManager.notify(NOTIFICATION_ID, notification);
 	}
 	void clearNotification()
 	{
